@@ -1,0 +1,28 @@
+security:
+    encoders:
+        App\Entity\User: bcrypt
+
+    # ...
+
+    providers:
+        our_db_provider:
+            entity:
+                class: App\Entity\User
+                property: username
+                # если вы используете несколько менеджеров сущностей
+                # manager_name: customer
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            pattern:    ^/projects
+            http_basic:
+                realm: Secured Area
+            anonymous: ~
+            guard:
+                authenticators:
+                    - App\Security\LoginFormAuthenticator
+            access_control:
+                - { path: ^/admin, roles: ROLE_ADMIN}

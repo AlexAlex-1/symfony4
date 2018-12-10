@@ -1,0 +1,19 @@
+ <?php 
+namespace App\Controller; 
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\Projects;
+use App\Entity\Tickets;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+class TicketsController extends AbstractController
+{   
+     /**
+     * @Route("/projects/ticket", name="tickets")
+     */
+     public function index()
+     {   
+     return $this->render('404.html.twig');
+     }
+ } 

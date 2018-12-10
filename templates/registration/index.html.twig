@@ -1,0 +1,24 @@
+{%extends 'general.html.twig'%}
+{%block body%}
+<center>
+{%for message in app.flashes('user_create')%}
+<div class="alert alert-success">
+{{message}}
+</div>
+{%endfor%}
+{%for message in app.flashes('user_not_create')%}
+<div class="alert alert-danger" role="alert">
+{{message}}
+</div>
+{%endfor%}
+<div class="col-sm-6">
+<h2>Registration</h2>
+{{ form_start(form) }}
+{{form_widget(form.username, {'attr':{'class':'form-control', 'placeholder':'Your Login'}})}}
+{{form_widget(form.password.first, {'attr':{'class':'form-control', 'placeholder':'Your Password'}})}}
+{{form_widget(form.password.second, {'attr':{'class':'form-control','placeholder':'Repeat Your Password'}})}}
+{{form_widget(form.Submit, {'attr':{'class':'btn btn-primary btn-lg btn-block'}})}}
+{{ form_end(form) }}
+</div>
+</center>
+{%endblock%}
