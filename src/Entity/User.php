@@ -9,6 +9,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @UniqueEntity(fields="username", message="Username already taken")
  */
 class User implements UserInterface
 {
@@ -68,9 +69,7 @@ class User implements UserInterface
 
     public function getRoles()
     {
-        $this->roles = $roles;
-        
-        return $this;
+        return $this->roles;
     }
 
     public function setRoles(array $roles): self
