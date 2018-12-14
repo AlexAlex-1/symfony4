@@ -8,14 +8,14 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20181208111930 extends AbstractMigration
+final class Version20181213124327 extends AbstractMigration
 {
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE user DROP api_token');
+        $this->addSql('DROP INDEX `UNIQUE` ON tickets_tags');
     }
 
     public function down(Schema $schema) : void
@@ -23,6 +23,6 @@ final class Version20181208111930 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE user ADD api_token VARCHAR(255) NOT NULL COLLATE utf8mb4_unicode_ci');
+        $this->addSql('CREATE UNIQUE INDEX `UNIQUE` ON tickets_tags (ticket_id, tag_id)');
     }
 }

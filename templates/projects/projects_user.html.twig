@@ -1,0 +1,26 @@
+{%extends 'general.html.twig'%}
+{%block title%}Projects {{user.username}}{%endblock%}
+{%block body%}
+<center>
+<h2>Таблица проектов пользователя {{user.username}}</h2>
+</center>
+<table border=1 class="table">
+<tr>
+<th>ID</th>
+<th>usr_id</th>
+<th>name</th>
+<th>link</th>
+</tr>
+{%for key in projects%}
+<tr>
+<td>{{key.id}}</td>
+<td>{{key.userid}}</td>
+<td>{{key.name}}</td>
+<td><a href="/projects/montrer/{{key.id}}">About</a></td>
+</tr>
+{%endfor%}
+</table>
+<a href="/projects/create">Create project</a>
+<a href="/projects">En arrière</a>
+{%endblock%}
+

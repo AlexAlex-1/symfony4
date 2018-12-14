@@ -4,6 +4,11 @@ use App\Entity\Tickets;
 use App\Entity\Projects;
 use App\Form\CreateProject;
 use App\Form\editProject;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,7 +47,13 @@ class ProjectsController extends AbstractController
     public function createProject(Request $request)
     {
         $project = new Projects();
-        $form = $this->createForm(CreateProject::class, $project);
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser()->getId();
+        $form = $this->createFormBuilder($project)
+            ->add('UserId', HiddenType::class, array('data'=>$user))
+            ->add('Name')
+            ->add('Submit', SubmitType::class)
+            ->getForm();
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()){
           $save = $this->getDoctrine()->getManager();
@@ -52,6 +63,7 @@ class ProjectsController extends AbstractController
           return $this->redirectToRoute("projects_info", ['id'=>$projectid]);
         }
         return $this->render('projects/create.html.twig', [
+            'user'=>$user,
             'project' => $project,
             'form' => $form->createView(),
         ]);
@@ -60,6 +72,7 @@ class ProjectsController extends AbstractController
     * @Route("/projects/edit/{id}", name="project_edit", methods="GET|POST");
     */
     public function editProject(Request $request, Projects $projects, $id){
+      $this->denyAccessUnlessGranted('EDIT', $projects);
       $form = $this->createForm(editProject::class, $projects);
       $form->handleRequest($request);
       if($form->isSubmitted() && $form->isValid()){
@@ -82,5 +95,20 @@ class ProjectsController extends AbstractController
       $repository->remove($project);
       $repository->flush();
       return $this->redirectToRoute('start');
+    }
+    
+    /**
+    * @Route("/projects/user/{id}", name="projects_user")
+    */
+    
+    public function userProjects(){
+        $user = $this->getUser();
+        $id = $this->getUser()->getId();
+        $projects = $this->getDoctrine()->getRepository(Projects::class)->findBy(['user_id'=>$id]);
+        return $this->render('projects/projects_user.html.twig', [
+        'controller_name' => 'ProjectsController',
+        'projects' => $projects,
+        'user' => $user,
+        ]);
     }
 }

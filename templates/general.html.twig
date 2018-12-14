@@ -6,11 +6,37 @@
         {%block stylesheet%}{%endblock%}
     </head>
     <body>
+         <nav class="navbar navbar-expand-lg navbar-light bg-light" style="
+            position: fixed; width:100%; z-index:1;">
+             <div class="collapse navbar-collapse" id="navbarText">
+               <ul class="navbar-nav mr-auto">
+               <li class="nav-item active">
+               <a class="nav-link" href="/projects/">Home
+               <span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link" href="/tickets/user">Your Tickets</a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link" href="/projects/user/{id}">Your Projects</a>
+              </li>
+              <li class="nav-item">
+              <a class="nav-link" href="#">Your Tags</a>
+              </li>
+              </ul>
+              <form class="form-inline pull-xs-right"style="top:100 px">
+                  <input class="form-control" type="text" placeholder="Tag Search">
+                  <button class="btn btn-outline-success" type="submit">Search</button>
+              </form>
+              <span class="navbar-text"><a href="/logout">Exit</a></span>
+            </div>
+            {%block nav%}{%endblock%}
+          </nav>
+
         <!-- menu -->
-        <div class="container">
+        <div class="container" style="position: relative; top: 100px;">
             {%block body%}{%endblock%}
         </div>
         <!-- footer -->
-        <span class="navbar-text"><a href="/logout">logout</a></span>
     </body>
 </html>

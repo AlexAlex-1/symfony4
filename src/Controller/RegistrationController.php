@@ -18,6 +18,9 @@ class RegistrationController extends AbstractController
      */
     public function registation(Request $request, UserPasswordEncoderInterface $passwordEncoder)
     {
+        if ($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')) {
+        return $this->redirectToRoute('start');
+        }
         $user = new User();
         $form = $this->createForm(RegistrationType::class, $user);
         $form->handleRequest($request);
@@ -33,7 +36,7 @@ class RegistrationController extends AbstractController
             $this->addFlash(
             'user_create',
             'Успешая регистрация!Войдите со своим логином и паролем!');
-            return $this->redirectToRoute('registration');
+            return $this->redirectToRoute('app_login');
             }
             else{
 //foreach ($form->getErrors() as $error) {
@@ -43,7 +46,7 @@ class RegistrationController extends AbstractController
             'user_not_create',
             'Ошибка регистрации!');
            //  var_dump($user);
-             return $this->redirectToRoute('registration');
+             return $this->redirectToRoute('app_login');
              }
         }
     return $this->render(
