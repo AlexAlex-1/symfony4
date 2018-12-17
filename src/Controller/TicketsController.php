@@ -61,7 +61,6 @@ class TicketsController extends AbstractController
         $tag = new Tags();
         $form = $this->createFormBuilder($tag)
             ->add('Name')
-            ->add('Submit', SubmitType::class)
             ->getForm();
         $form->handleRequest($request);
 

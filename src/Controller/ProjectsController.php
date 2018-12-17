@@ -98,7 +98,7 @@ class ProjectsController extends AbstractController
     }
     
     /**
-    * @Route("/projects/user/{id}", name="projects_user")
+    * @Route("/projects/user", name="projects_user")
     */
     
     public function userProjects(){

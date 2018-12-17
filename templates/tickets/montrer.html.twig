@@ -7,11 +7,14 @@
 {{message}}
 </div>
 {%endfor%}
-{%for key in tags%}
-{{key.0.name}}
-{%endfor%}
+</center>
 {{form_start(form)}}
+<div class="form-group col-md-3">
+{{form_widget(form.Name, {'attr':{'class':'form-control', 'value':'', 'placeholder':'Enter Tag:'}})}}
+<input type="submit" style="display:none">
 {{form_end(form)}}
+</div>
+<center>
 <h3>Description de ce ticket</h3>
 </center>
 <ul>
@@ -28,4 +31,9 @@
 <a href="/projects/tickets/del/{{ticket.id}}">Supprumer ce ticket</a>
 <a href="/projects/tickets/{{ticket.id}}/edit">Modifier ce ticket</a>
 {%endif%}
+<br>
+<h3>Tags:</h3>
+{%for key in tags%}
+<a href="/tags/{{key.0.id}}">#{{key.0.Name}}</a>
+{%endfor%}
 {%endblock%}
