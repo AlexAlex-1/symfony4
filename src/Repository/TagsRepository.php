@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\Entity\Tickets;
+use App\Entity\TicketsTags;
 use App\Entity\Tags;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -46,5 +48,17 @@ class TagsRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
     }
-    */
+     */
+    public function findByTags($tag){
+        $query = $this->getEntityManager()->createQuery(
+            "SELECT e
+            FROM App\Entity\Tags k
+            JOIN App\Entity\TicketsTags l
+            WITH l.Tag_id = k.id
+            JOIN App\Entity\Tickets e
+            WITH e.id = l.Ticket_id
+            WHERE k.id = $tag"
+            );
+            return $query->execute();
+    } 
 }

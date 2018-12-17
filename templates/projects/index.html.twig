@@ -1,27 +1,27 @@
 {%extends 'general.html.twig'%}
-{%block title%}Tous les projets{%endblock%}
+{%block title%}All projects {%endblock%}
 {%block body%}
-{%for message in app.flashes('user_create') %}
-{{message}}
-{%endfor%}
-<center>
-<h2>Таблица проектов</h2>
-</center>
-<table border=1 class="table">
-<tr>
-<th>ID</th>
-<th>usr_id</th>
-<th>name</th>
-<th>link</th>
-</tr>
-{%for key in projects%}
-<tr>
-<td>{{key.id}}</td>
-<td>{{key.userid}}</td>
-<td>{{key.name}}</td>
-<td><a href="/projects/montrer/{{key.id}}">About</a></td>
-</tr>
-{%endfor%}
-</table>
-<a href="/projects/create">Create project</a>
+    {%for message in app.flashes('user_create') %}
+        {{message}}
+    {%endfor%}
+    <center>
+        <h2>Projects table</h2>
+    </center>
+    <table border=1 class="table">
+        <tr>
+            <th>ID</th>
+            <th>Usr_id</th>
+            <th>Name</th>
+            <th>Link</th>
+        </tr>
+        {%for key in projects%}
+            <tr>
+                <td>{{key.id}}</td>
+                <td>{{key.userid}}</td>
+                <td>{{key.name}}</td>
+                <td><a href="/projects/watch/{{key.id}}">About</a></td>
+            </tr>
+        {%endfor%}
+    </table>
+    <a href="/projects/create">Create project</a>
 {%endblock%}

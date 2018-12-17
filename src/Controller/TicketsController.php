@@ -25,37 +25,23 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 class TicketsController extends AbstractController
 {
     /**
-     * @Route("/projects/tickets", name="tickets")
-     */
-    public function index()
-    {
-        return $this->render('404.html.twig', [
-            'controller_name' => 'TicketsController',
-        ]);
-    }
-    /**
-     * @Route("/projects/tickets/{id}", name="ticket_montrer")
+     * @Route("/projects/tickets/{id}", name="ticket_watch")
     */
 
-    public function montrer(Request $request, $id)
+    public function watch(Request $request, $id)
     {
         $ticket = $this->getDoctrine()->getRepository(Tickets::class)->find($id);
         $tictag = $this->getDoctrine()->getRepository(TicketsTags::class)->findBy(['Ticket_id'=>$id]);
         $tagName = array();
         foreach($tictag as $key => $value){
-            $object[$key] = $value;
-            $tagName[$key] = $object[$key]->getTagId();
+            $tagName[$key] = $value->getTagId();
         }
-        $tagsmass = array();
-        foreach($tagName as $key => $value){
-            $tag = $value;
-            $tagss = $this->getDoctrine()->getRepository(Tags::class)->findBy(['id'=>$tag]);
-            $tagsmass[$key] = $tagss;
-            $tagsName = array();
-            $objectN = array();
-            foreach($tagss as $key => $value){
-                $objectN[$key] = $value;
-                $tagsName[$key] = $objectN[$key]->getName();
+        $tags_array = array();
+        foreach($tagName as $key => $tag_id){
+            $tags = $this->getDoctrine()->getRepository(Tags::class)->findBy(['id'=>$tag_id]);
+            $tags_array[$key] = $tags;
+            foreach($tags as $key => $object){
+                $tagsName[$key] = $object->getName();
             }
         }
         $tag = new Tags();
@@ -71,46 +57,44 @@ class TicketsController extends AbstractController
                 $save = $this->getDoctrine()->getManager();
                 $save->persist($tag);
                 $save->flush();
-                $tagid = $tag->getId();
-                $tictag = new TicketsTags();
-                $tictag->setTicketId($id);
-                $tictag->setTagId($tagid);
+                $tagId = $tag->getId();
+                $tic_tag = new TicketsTags();
+                $tic_tag->setTicketId($id);
+                $tic_tag->setTagId($tagId);
                 $save = $this->getDoctrine()->getManager();
-                $save->persist($tictag);
+                $save->persist($tic_tag);
                 $save->flush();
             } else {
-                $tagIdd = $tags[0]->getId();
+                $tagId = $tags[0]->getId();
                 $tics = $this->getDoctrine()->getRepository(TicketsTags::class)->findBy(['Ticket_id'=>$id]);
-                $ticks = array();
                 foreach ($tics as $key => $value){
-                    $ticks[$key] = $value;
-                    $ticksId = $ticks[$key]->getTagId();
-                    if($ticksId == $tagIdd){
+                    $tagId_ticket = $value->getTagId();
+                    if($ticksId == $tagId_ticket){
                         $this->addFlash(
                             'Error_Tag',
                             'Такой тег у тикета существует!'
                         );
-                        return $this->redirectToRoute("ticket_montrer", ['id'=>$id]);
+                        return $this->redirectToRoute("ticket_watch", ['id'=>$id]);
                     }
                 }
                 
-                $tictag = new TicketSTags();
-                $tictag->setTicketId($id);
-                $tictag->setTagId($tagIdd);
+                $tic_tag = new TicketSTags();
+                $tic_tag->setTicketId($id);
+                $tic_tag->setTagId($tagIdd);
                 $save = $this->getDoctrine()->getManager();
                 $save->persist($tictag);
                 $save->flush();
 
-                return $this->redirectToRoute("ticket_montrer", ['id'=>$id]);
+                return $this->redirectToRoute("ticket_watch", ['id'=>$id]);
             }
         }
             if (!isset($ticket)) {
                 return $this->render('404.html.twig');
             }
 
-            return $this->render('/tickets/montrer.html.twig', [
+            return $this->render('/tickets/watch.html.twig', [
                 'ticket'=>$ticket,
-                'tags'=>$tagsmass,
+                'tags'=>$tags_array,
                 'form'=>$form->createView(),
             ]);
     }
@@ -120,24 +104,22 @@ class TicketsController extends AbstractController
     */
     
     public function createTickets(Request $request,Projects $project, $id,SessionInterface $session){ 
-   // $users = $this->getDoctrine()->getRepository(Users::class)->findAll();
     $ticket = new Tickets();
-    $user = $this->getUser()->getId();
-    $userN = $this->getUser()->getUsername();
+    $userId_session = $this->getUser()->getId();
+    $userName_session = $this->getUser()->getUsername();
     $users = $this->getDoctrine()->getRepository(User::class);
     $repository = $this->getDoctrine()->getRepository(User::class)->findAll();
-    $userName = array("$userN"=>"$user");
+    $userName = array("$userName_session"=>"$userId_session");
            foreach ($repository as $key)
           {
-            $rie = $key;
-            $namee = $rie->getUsername();
-            $idd = $rie->getId();
+            $namee = $key->getUsername();
+            $idd = $key->getId();
             $userName[$namee] = $idd;
           }
     $form = $this->createFormBuilder($ticket)
      ->add('Name')
      ->add('ProjectId', HiddenType::class, array('data'=>$id))
-     ->add('UserId', HiddenType::class, array('data'=>$user))
+     ->add('UserId', HiddenType::class, array('data'=>$userId_session))
      ->add('Description',TextType::class)
      ->add('AssigneeId', ChoiceType::class, array('choices'=>$userName))
      ->add('Status', ChoiceType::class, array(
@@ -155,7 +137,7 @@ class TicketsController extends AbstractController
     if ($form->isSubmitted() && $form->isValid()){
     $this->addFlash(
     'sms',
-    'Votre projet est enregistré'
+    'Проект сохранен!'
     );
     $file = $ticket->getFile();
     $fileName = $this->uniqueName().'.'.$file->guessExtension();
@@ -210,7 +192,7 @@ class TicketsController extends AbstractController
     $this->getDoctrine()->getManager()->flush();
     $form = $this->createForm(editTicket::class, $tickets);
     $form->handleRequest($request);
-    return $this->redirectToRoute('ticket_montrer', ['id'=>$id]);
+    return $this->redirectToRoute('ticket_watch', ['id'=>$id]);
     }
     return $this->render('tickets/edit.html.twig', [
         'ticket'=>$tickets,
@@ -220,8 +202,6 @@ class TicketsController extends AbstractController
     }
     private function uniqueName()
     {
-        // md5() уменьшает схожесть имён файлов, сгенерированных
-        // uniqid(), которые основанный на временных отметках
         return md5(uniqid());
     }
 

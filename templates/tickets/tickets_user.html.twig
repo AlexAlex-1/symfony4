@@ -1,22 +1,22 @@
 {%extends 'general.html.twig'%}
 {%block body%}
-<table border=1 class="table">
-<center>
-<h2>
-Тикеты пользователя {{user.username}}
-</h2>
-<center>
-<tr>
-<th>ID</th>
-<th>Project Name</th>
-<th>Description</th>
-</tr>
-{% for key in ticket %}
-<tr>
-<th>{{key.id}}</th>
-<th>{{key.name}}</th>
-<th><a href="/projects/tickets/{{key.id}}">{{key.description}}</a></th>
-</tr>
-{% endfor %}
-</table>
+    <center>
+        <h2>
+            User tickets {{user.username}}
+        </h2>
+    </center>
+    <table border=1 class="table">
+        <tr>
+            <th>ID</th>
+            <th>Project Name</th>
+            <th>Description</th>
+        </tr>
+        {% for key in ticket %}
+            <tr>
+                <th>{{key.id}}</th>
+                <th>{{key.name}}</th>
+                <th><a href="/projects/tickets/{{key.id}}">{{key.description}}</a></th>
+            </tr>
+        {% endfor %}
+    </table>
 {%endblock%}

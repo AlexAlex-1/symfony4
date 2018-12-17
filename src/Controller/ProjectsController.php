@@ -19,7 +19,7 @@ class ProjectsController extends AbstractController
     /**
      * @Route("/projects", name="start")
      */
-    public function montrerProjects()
+    public function watchAllProjects()
     {
         $projects = $this->getDoctrine()->getRepository(Projects::class)->findAll();
         return $this->render('projects/index.html.twig', [
@@ -28,15 +28,15 @@ class ProjectsController extends AbstractController
         ]);
     }
     /**
-    * @Route("/projects/montrer/{id}", name="projects_info")
+    * @Route("/projects/watch/{id}", name="projects_info")
     */
-    public function montrerProject($id){
+    public function watchProject($id){
       $project = $this->getDoctrine()->getRepository(Projects::class)->find($id);
       $tickets = $this->getDoctrine()->getRepository(Tickets::class)->findBy(['project_id'=>$id]);
       if (!isset($project)){
         return $this->render('/404.html.twig');
       }
-      return $this->render('projects/montrer.html.twig',[
+      return $this->render('projects/watch.html.twig',[
         'project'=>$project,
         'tickets'=>$tickets,
       ]);
@@ -98,7 +98,7 @@ class ProjectsController extends AbstractController
     }
     
     /**
-    * @Route("/projects/user", name="projects_user")
+    * @Route("/user/projects", name="projects_user")
     */
     
     public function userProjects(){
